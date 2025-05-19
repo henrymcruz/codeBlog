@@ -5,12 +5,11 @@ import com.spring.codeblog.service.CodeblogService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,37 +18,39 @@ import java.util.List;
 public class CodeblogController {
 
     @Autowired
-    CodeblogService codeblogService;
+    private CodeblogService codeblogService;
 
-    @RequestMapping(value = "/posts", method = RequestMethod.GET)
-    public ModelAndView getPosts(){
-        ModelAndView mv = new ModelAndView("posts");
+    @GetMapping("/posts")
+    public String getPosts(Model model) {
         List<Post> posts = codeblogService.findAll();
-        mv.addObject("posts", posts);
-        return mv;
+        model.addAttribute("posts", posts);
+        return "posts";  // nome da view posts.html
     }
-    @RequestMapping(value = "/posts/{id}", method = RequestMethod.GET)
-    public ModelAndView getPostDetails(@PathVariable("id") Long id){
-        ModelAndView mv = new ModelAndView("postDetails");
+
+    @GetMapping("/posts/{id}")
+    public String getPostDetails(@PathVariable("id") Long id, Model model) {
         Post post = codeblogService.findById(id);
-        mv.addObject("post", post);
-        return mv;
+        if (post == null) {
+            return "redirect:/posts";  // se não achar o post, redireciona
+        }
+        model.addAttribute("post", post);
+        return "postDetails";  // nome da view postDetails.html
     }
 
-    @RequestMapping(value = "/newpost", method = RequestMethod.GET)
-    public String getPostForm(){
-        return "postForm";
+    @GetMapping("/newpost")
+    public String getPostForm(Model model) {
+        model.addAttribute("post", new Post());
+        return "postForm";  // nome da view postForm.html
     }
 
-    @RequestMapping(value = "newpost", method = RequestMethod.POST)
-    public String savePost(@Valid Post post, BindingResult result, RedirectAttributes attributes) {
+    @PostMapping("/newpost")
+    public String savePost(@Valid Post post, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            attributes.addFlashAttribute("Menssagem", "Verifique se os campos obrigatórios foram preenchidos!");
-            return "redirect:/newpost";
+            model.addAttribute("post", post);
+            return "postForm";  // volta pro form mostrando erros
         }
         post.setData(LocalDate.now());
         codeblogService.save(post);
-        return "redirect:/posts";
+        return "redirect:/posts";  // se OK, redireciona para lista
     }
-
 }

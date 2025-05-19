@@ -4,6 +4,7 @@ import com.spring.codeblog.model.Post;
 import com.spring.codeblog.repository.CodeblogRepository;
 import com.spring.codeblog.service.CodeblogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,20 +13,24 @@ import java.util.List;
 public class CodeblogServiceImpl implements CodeblogService {
 
     @Autowired
-    CodeblogRepository codeblogRepository;
+    private CodeblogRepository codeblogRepository;
 
     @Override
     public List<Post> findAll() {
-        return codeblogRepository.findAll();
+        return codeblogRepository.findAll(sortByIdDesc());
     }
 
     @Override
     public Post findById(Long id) {
-        return codeblogRepository.findById(id).get();
+        return codeblogRepository.findById(id).orElse(null);
     }
 
     @Override
     public Post save(Post post) {
         return codeblogRepository.save(post);
+    }
+
+    private Sort sortByIdDesc() {
+        return Sort.by(Sort.Direction.DESC, "id");
     }
 }

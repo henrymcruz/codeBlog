@@ -2,13 +2,12 @@
 <html lang="pt"
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://thymeleaf.org">
-<head>
-
-</head>
+<head></head>
 <body>
-<div class="alert alert-danger alert-dismissible" role="alert" th:if="${not #strings.isEmpty(mensagem)}">
-
-  <span th:text="${mensagem}"></span>
+<div th:fragment="mensagemValidacao">
+  <div class="alert alert-danger alert-dismissible" role="alert" th:if="${not #strings.isEmpty(mensagem)}">
+    <span th:text="${mensagem}"></span>
+  </div>
 </div>
 </body>
 </html>

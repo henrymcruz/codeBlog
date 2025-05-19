@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="http://thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>MyCodeBlog</title>
-    <!--Import Google Icon Font-->
+    <!-- Google Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <!--<link rel="stylesheet" href="style/styleCss.css"/>-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          crossorigin="anonymous">
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
@@ -26,29 +26,34 @@
 <section>
     <div class="container" style="width: 70%;">
         <nav aria-label="breadcrumb">
-            <ol class="breadcrumb" style="background-color: white; padding-left: 0px;">
+            <ol class="breadcrumb" style="background-color: white; padding-left: 0;">
                 <li class="breadcrumb-item"><a href="/posts">Posts</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Novo Post</li>
             </ol>
         </nav>
-        <div>
-            <th:block th:include="mensagemValidacao"></th:block>
-            <form method="post">
-                <div class="form-group">
-                    <input type="text" class="form-control" name="titulo" placeholder="Título *">
-                </div>
-                <div class="form-group">
-                    <input type="text" class="form-control" name="autor" placeholder="Autor *">
-                </div>
 
-                <textarea id="summernote" type="text" class="form-control" name="texto" placeholder="Texto *"></textarea>
+        <!-- Mensagem geral de erro (exemplo se usar flash attributes) -->
+        <div th:if="${mensagem}" class="alert alert-danger" role="alert" th:text="${mensagem}"></div>
 
-                <small class="form-text text-muted">(*) Campos obrigatórios</small>
+        <form method="post" th:action="@{/newpost}" th:object="${post}">
+            <div class="form-group">
+                <input type="text" class="form-control" th:field="*{titulo}" placeholder="Título *">
+                <div class="text-danger" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></div>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" th:field="*{autor}" placeholder="Autor *">
+                <div class="text-danger" th:if="${#fields.hasErrors('autor')}" th:errors="*{autor}"></div>
+            </div>
+            <div class="form-group">
+                <textarea id="summernote" class="form-control" th:field="*{texto}" placeholder="Texto *"></textarea>
+                <div class="text-danger" th:if="${#fields.hasErrors('texto')}" th:errors="*{texto}"></div>
+            </div>
 
-                <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Publicar</button>
-                <a href="/posts" class="btn btn-light" role="button" style="margin-top: 10px;">Cancelar</a>
-            </form>
-        </div>
+            <small class="form-text text-muted">(*) Campos obrigatórios</small>
+
+            <button type="submit" class="btn btn-primary mt-2">Publicar</button>
+            <a href="/posts" class="btn btn-light mt-2" role="button">Cancelar</a>
+        </form>
     </div>
 </section>
 

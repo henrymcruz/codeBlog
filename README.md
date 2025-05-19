@@ -71,4 +71,4 @@ A aplicação estará disponível em [http://localhost:8080/posts](http://localh
 
 ---
 
-Feito com 💻 por [Henry Mori](https://github.com/henrymori)
+Feito por [Henry Mori](https://github.com/henrymori)
